@@ -4,7 +4,7 @@ import PyPDF2
 
 def main_function():
     # creating a pdf file object
-    pdfFileObj = open('Scotia_September_statement.pdf', 'rb')
+    pdfFileObj = open('statement-32.pdf', 'rb')
     
     # creating a pdf reader object
     pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
