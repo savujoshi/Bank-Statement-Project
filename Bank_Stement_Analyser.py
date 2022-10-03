@@ -3,10 +3,19 @@ import PyPDF2
 
 
 def main_function():
+
+    filePathScotia = 'Scotia_September_statement.pdf'
+    parse_Scotia_Pdf(filePathScotia)
+
+
+def parse_Scotia_Pdf(filePath):
+    transactionDict = {}
+    pdfFileObj = open(filePath, 'rb')
     pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
 
     for pageNo in range(0, pdfReader.numPages):
         lineCounter = 0
+        
         if pageNo != 1:
             pageObj = pdfReader.getPage(pageNo)
             statementPageLines = pageObj.extract_text().split('\n')
@@ -27,27 +36,59 @@ def main_function():
                         statementNum = statementPageLines[lineCounter+12]
                         # Found 
                         print("Transaction Number:",statementNum)
-                        statementLineCounter = 1
+                        statementLineCounter = 0
                         for i in range(lineCounter+12,len(statementPageLines)):
                             if statementPageLines[i].isnumeric():
                                 if int(statementPageLines[lineCounter+12])+statementLineCounter == int(statementPageLines[i]):
-                                    print("\n")
+                                    # print("\n")
+                                    # print(statementPageLines[i])
+                                    transactionElements = []
                                     for j in range(0,8):
                                         if statementPageLines[i+j].isnumeric():
                                             if int(statementPageLines[lineCounter+12])+statementLineCounter +1 == int(statementPageLines[i+j]):
                                                 # print(int(statementPageLines[lineCounter+12])+statementLineCounter +1)
                                                 break
-                                        print(statementPageLines[i+j])
-                                      
+                                        if j!=0:
+                                            transactionElements.append(statementPageLines[i+j])
+                                        # print(statementPageLines[i+j])
+                                    # print(int(statementPageLines[i]))
+                                    transactionDict.update({int(statementPageLines[i]):transactionElements})
+                                    # print(transactionDict)
                                     statementLineCounter+=1
 
                         # print(int(statementNum)+1)
                         
                     lineCounter += 1
-
+                else:
+                    # print(item)
+                    if "Transactions - continued" in item:
+                        statementNum = statementPageLines[lineCounter+8]
+                        print(statementNum)
+                        statementLineCounter = 0
+                        for i in range(lineCounter+8,len(statementPageLines)):
+                            if statementPageLines[i].isnumeric():
+                                if int(statementPageLines[lineCounter+8])+statementLineCounter == int(statementPageLines[i]):
+                                    # print("\n")
+                                    # print(statementPageLines[i])
+                                    transactionElements = []
+                                    for j in range(0,8):
+                                        if statementPageLines[i+j].isnumeric():
+                                            if int(statementPageLines[lineCounter+8])+statementLineCounter +1 == int(statementPageLines[i+j]):
+                                                # print(int(statementPageLines[lineCounter+12])+statementLineCounter +1)
+                                                break
+                                        if j!=0:
+                                            transactionElements.append(statementPageLines[i+j])
+                                        # print(statementPageLines[i+j])
+                                    # print(int(statementPageLines[i]))
+                                    transactionDict.update({int(statementPageLines[i]):transactionElements})
+                                    # print(transactionDict)
+                                    statementLineCounter+=1
+                    lineCounter += 1
+                
 
             print("\n \n")
     pdfFileObj.close()
+    print(transactionDict)
 
 
 def parse_Neo_Pdf(filePath):
