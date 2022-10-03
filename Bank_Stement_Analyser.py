@@ -3,13 +3,6 @@ import PyPDF2
 
 
 def main_function():
-
-    filePathScotia = 'Scotia_September_statement.pdf'
-    parse_Scotia_Pdf(filePathScotia)
-
-
-def parse_Scotia_Pdf(filePath):
-    pdfFileObj = open(filePath, 'rb')
     pdfReader = PyPDF2.PdfFileReader(pdfFileObj)
 
     for pageNo in range(0, pdfReader.numPages):
